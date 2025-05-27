@@ -3,6 +3,39 @@
 Try it out: 👉 [qa-evaluator-ui.vercel.app](https://qa-evaluator-ui.vercel.app)
 
 
+---
+
+## 🛠️ Tech Stack
+
+- **Backend:** Python 3, Flask, huggingface_hub, pandas, datasets  
+- **Frontend:** React.js, CSS (with animations)  
+- **Deployment:** Railway (Procfile, railway.toml)  
+
+---
+
+## 📷 UI Preview
+
+![App Preview](./images/image.png "UI Preview")
+
+![App Preview](./images/1.png "UI Preview")
+
+
+
+![App Preview](./images/2.png "UI Preview")
+![App Preview](./images/3.png "UI Preview")
+
+
+#⚡ Features
+
+    LLM-based open-ended QA evaluation
+
+    Integration with human feedback and automated metrics
+
+    Production-ready React frontend with smooth UI
+
+    Flask backend with health checks and CORS enabled
+
+    Ready for cloud deployment with Railway
 ## Setup
 
 1. Clone the repository
