@@ -7,7 +7,7 @@ Try it out: 👉 [qa-evaluator-ui.vercel.app](https://qa-evaluator-ui.vercel.app
 
 ## 🛠️ Tech Stack
 
-- **Backend:** Python 3, Flask, huggingface_hub, pandas, datasets  
+- **Backend:** Python 3, Flask, Google Gemini, pandas, datasets  
 - **Frontend:** React.js, CSS (with animations)  
 - **Deployment:** Railway (Procfile, railway.toml)  
 
