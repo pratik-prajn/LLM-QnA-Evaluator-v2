@@ -2,36 +2,37 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Send, MessageCircle, ThumbsUp, ThumbsDown, AlertCircle, Loader, BarChart3, TrendingUp, Scale, Brain, RotateCcw, MessageSquare, X } from 'lucide-react';
 import './App.css';
+import Footer from './Footer';
 
-// Your Railway backend URL
+//Railway backend URL
 const API_BASE_URL = 'https://llm-qna-evaluator-v2-production.up.railway.app/api';
 
 const formatAnswerText = (text) => {
   if (!text) return '';
   
   return text
-    // Convert **bold** to <strong>
+   
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    // Convert *italic* to <em>
+   
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    // Convert bullet points starting with * to proper list items
+   
     .replace(/^\* (.*$)/gim, '<li>$1</li>')
-    // Wrap consecutive list items in <ul>
+   
     .replace(/(<li>.*<\/li>)/gs, (match) => {
       const items = match.split('</li>').filter(item => item.trim());
       return '<ul>' + items.map(item => item + '</li>').join('') + '</ul>';
     })
-    // Convert line breaks to <br>
+   
     .replace(/\n/g, '<br>')
-    // Convert headings (### to h3, ## to h2, # to h1)
+   
     .replace(/^### (.*$)/gim, '<h3>$1</h3>')
     .replace(/^## (.*$)/gim, '<h2>$1</h2>')
     .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-    // Convert numbered lists
+    
     .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
-    // Handle code blocks with backticks
+    
     .replace(/`([^`]+)`/g, '<code>$1</code>')
-    // Handle superscript
+   
     .replace(/<sup>(.*?)<\/sup>/g, '<sup>$1</sup>');
 };
 
@@ -64,7 +65,7 @@ function App() {
         answer: response.data.answer,
         evaluation: response.data.evaluation,
         timestamp: new Date().toLocaleString(),
-        feedback: null // Initialize feedback
+        feedback: null 
       };
 
       setConversations(prev => [newConversation, ...prev]);
@@ -111,7 +112,7 @@ function App() {
       setFeedbackModalOpen(conversationId);
       setFeedbackComment('');
     } else {
-      // Quick thumbs feedback
+      
       setConversations(prev => prev.map(conv => 
         conv.id === conversationId 
           ? {
@@ -133,7 +134,7 @@ function App() {
     setSubmittingFeedback(true);
 
     try {
-      // Update conversation with feedback
+      
       setConversations(prev => prev.map(conv => 
         conv.id === feedbackModalOpen 
           ? {
@@ -147,15 +148,11 @@ function App() {
           : conv
       ));
 
-      // Close modal
+      
       setFeedbackModalOpen(null);
       setFeedbackComment('');
 
-      // Here you could also send feedback to your backend
-      // await axios.post(`${API_BASE_URL}/feedback`, {
-      //   conversationId: feedbackModalOpen,
-      //   feedback: feedbackComment.trim()
-      // });
+      
 
     } catch (err) {
       console.error('Error submitting feedback:', err);
@@ -198,14 +195,14 @@ function App() {
 
   return (
     <div className="app">
-      {/* Header */}
+      
       <header className="header">
         <div className="header-content">
           <div className="header-info">
             <Scale className="header-icon" />
             <div>
               <h1 className="header-title">LLM-as-a-Judge Q&A Evaluator</h1>
-              <p className="header-subtitle">AI-powered evaluation using LLM-as-a-Judge + ROUGE & BLEU metrics</p>
+              <p className="header-subtitle">evaluation using LLM-as-a-Judge + ROUGE & BLEU metrics</p>
             </div>
             <div className="method-badge">
               <Brain className="method-icon" />
@@ -215,9 +212,9 @@ function App() {
         </div>
       </header>
 
-      {/* Main Content */}
+      
       <main className="main-content">
-        {/* Question Input */}
+        
         <div className="input-section">
           <div className="input-container">
             <div className="textarea-container">
@@ -252,11 +249,11 @@ function App() {
           )}
         </div>
 
-        {/* Conversations */}
+       
         <div className="conversations">
           {conversations.map((conv) => (
             <div key={conv.id} className="conversation-card">
-              {/* Question */}
+              
               <div className="question-section">
                 <div className="question-header">
                   <div className="question-avatar">
@@ -285,12 +282,12 @@ function App() {
                 </div>
               </div>
 
-              {/* Answer */}
+              
               <div className="answer-section">
                 <div className="answer-header">
                   <h3 className="section-title">Answer</h3>
                   
-                  {/* Feedback Buttons */}
+                  
                   <div className="feedback-buttons">
                     <button
                       onClick={() => handleFeedback(conv.id, 'thumbs_up')}
@@ -325,7 +322,7 @@ function App() {
                   />
                 </div>
 
-                {/* Display feedback if provided */}
+                
                 {conv.feedback && (
                   <div className="feedback-display">
                     <div className="feedback-header">
@@ -379,7 +376,7 @@ function App() {
                     </span>
                   </div>
 
-                  {/* LLM Judge Detailed Scores */}
+                  
                   <div className="detailed-scores">
                     <h4 className="scores-title">
                       <Brain className="brain-icon" />
@@ -413,7 +410,7 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Objective NLP Metrics */}
+                  
                   {conv.evaluation.metrics_summary && (
                     <div className="metrics-section">
                       <div className="metrics-header">
@@ -511,33 +508,24 @@ function App() {
           {conversations.length === 0 && (
             <div className="empty-state">
               <Scale className="empty-icon" />
-              <h3 className="empty-title">Ready for LLM-as-a-Judge Evaluation</h3>
-              <p className="empty-description">
-                Ask your first question to see advanced AI evaluation using the LLM-as-a-Judge methodology!
-              </p>
+              
+              
               <div className="methodology-info">
                 <h4>🏛️ LLM-as-a-Judge Features:</h4>
                 <ul>
-                  <li>Expert-level qualitative assessment</li>
-                  <li>Detailed reasoning and confidence scores</li>
+                
+                  
                   <li>Combined with objective NLP metrics (ROUGE, BLEU)</li>
                   <li>User feedback collection for continuous improvement</li>
                 </ul>
               </div>
-              <div className="example-questions">
-                <p>Try questions like:</p>
-                <ul>
-                  <li>"How do I improve team productivity?"</li>
-                  <li>"What's the best deployment strategy?"</li>
-                  <li>"How to debug performance issues?"</li>
-                </ul>
-              </div>
+              
             </div>
           )}
         </div>
       </main>
 
-      {/* Feedback Modal */}
+      
       {feedbackModalOpen && (
         <div className="feedback-modal-overlay">
           <div className="feedback-modal">
@@ -578,6 +566,7 @@ function App() {
           </div>
         </div>
       )}
+      <Footer />
     </div>
   );
 }

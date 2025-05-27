@@ -7,9 +7,9 @@ import nltk
 from rouge_score import rouge_scorer
 from sacrebleu import BLEU
 import re
-import os  # Add this import
+import os  
 
-# Download only what we need (small downloads)
+
 def setup_nltk():
     """Download only required NLTK data"""
     try:
@@ -20,12 +20,12 @@ def setup_nltk():
         nltk.download('punkt', quiet=True)
         print("✅ Download complete!")
 
-# Call setup function
+
 setup_nltk()
 
 class AdvancedQAEvaluator:
     def __init__(self, api_key: str = None):
-        # Get API key from environment variable if not provided
+        
         if api_key is None:
             api_key = os.getenv('GEMINI_API_KEY')
             if not api_key:
@@ -33,13 +33,13 @@ class AdvancedQAEvaluator:
         
         genai.configure(api_key=api_key)
         
-        # Initialize ROUGE scorer (no additional downloads needed)
+      
         self.rouge_scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
         
-        # Initialize BLEU scorer (no additional downloads needed)
+        
         self.bleu_scorer = BLEU()
         
-        # Try different model names in order
+       
         model_names = [
             'gemini-1.5-flash',
             'gemini-1.5-pro', 
@@ -266,7 +266,7 @@ class AdvancedQAEvaluator:
             
             result = json.loads(response_text)
             
-            # Ensure llm_judge_verdict is present
+            
             if 'llm_judge_verdict' not in result:
                 result['llm_judge_verdict'] = result.get('quality', 'UNKNOWN')
             
@@ -291,15 +291,15 @@ class AdvancedQAEvaluator:
         if not rouge_scores:
             return {"overall_similarity": 0.0, "interpretation": "No metrics available"}
         
-        # Calculate weighted average of metrics
+        
         rouge1_f = rouge_scores.get('rouge1', {}).get('fmeasure', 0)
         rouge2_f = rouge_scores.get('rouge2', {}).get('fmeasure', 0)
         rougeL_f = rouge_scores.get('rougeL', {}).get('fmeasure', 0)
         
-        # Weighted combination
+        
         overall_similarity = (rouge1_f * 0.3 + rouge2_f * 0.2 + rougeL_f * 0.3 + bleu_score * 0.2)
         
-        # Interpretation
+        
         if overall_similarity >= 0.7:
             interpretation = "Excellent similarity to comprehensive reference"
         elif overall_similarity >= 0.5:
@@ -326,7 +326,7 @@ class AdvancedQAEvaluator:
         print("🏛️ LLM-AS-A-JUDGE EVALUATION RESULTS")
         print("="*80)
         
-        # LLM Judge Verdict
+        
         llm_verdict = evaluation.get('llm_judge_verdict', 'UNKNOWN')
         judge_confidence = evaluation.get('judge_confidence', 0)
         
@@ -338,7 +338,7 @@ class AdvancedQAEvaluator:
         quality = evaluation.get('quality', 'UNKNOWN')
         score = evaluation.get('score', 0)
         
-        # Quality and Score
+        
         if quality == "GOOD":
             print(f"\n✅ FINAL QUALITY: {quality} (Overall Score: {score}/10)")
         elif quality == "BAD":
@@ -346,7 +346,7 @@ class AdvancedQAEvaluator:
         else:
             print(f"\n⚠️  FINAL QUALITY: {quality} (Overall Score: {score}/10)")
         
-        # Detailed scores from LLM Judge
+        
         content_depth = evaluation.get('content_depth', 0)
         actionability = evaluation.get('actionability', 0)
         clarity = evaluation.get('clarity', 0)
@@ -358,7 +358,7 @@ class AdvancedQAEvaluator:
         print(f"   Clarity: {clarity}/10")
         print(f"   Comprehensiveness: {comprehensiveness}/10")
         
-        # Similarity Metrics
+        
         metrics_summary = evaluation.get('metrics_summary', {})
         if metrics_summary:
             print(f"\n📈 OBJECTIVE NLP METRICS:")
@@ -369,17 +369,17 @@ class AdvancedQAEvaluator:
             print(f"   BLEU Score: {metrics_summary.get('bleu_score', 0):.3f}")
             print(f"   📝 {metrics_summary.get('interpretation', 'No interpretation available')}")
         
-        # LLM Judge Reasoning
+        
         print(f"\n🧠 LLM JUDGE REASONING:")
         print(f"   {evaluation.get('reasoning', 'No reasoning provided')}")
         
-        # Strengths
+        
         if evaluation.get('strengths'):
             print(f"\n✨ IDENTIFIED STRENGTHS:")
             for strength in evaluation['strengths']:
                 print(f"   • {strength}")
         
-        # Missing elements
+        
         if evaluation.get('missing_elements'):
             print(f"\n🔧 IMPROVEMENT SUGGESTIONS:")
             for element in evaluation['missing_elements']:
@@ -389,7 +389,7 @@ class AdvancedQAEvaluator:
         print("💡 This evaluation combines LLM-as-a-Judge with objective NLP metrics")
         print("="*80)
 
-# Keep the original class for backward compatibility
+
 class TerminalQAEvaluator(AdvancedQAEvaluator):
     """Backward compatible class"""
     def evaluate_answer(self, question: str, answer: str) -> Dict:
@@ -409,9 +409,9 @@ def main():
     print("Advanced evaluation using LLM-as-a-Judge + ROUGE + BLEU metrics")
     print("Type 'quit' to exit\n")
     
-    # Remove the hardcoded API key - now it will use environment variable
+    
     try:
-        evaluator = AdvancedQAEvaluator()  # No API key needed - will use env var
+        evaluator = AdvancedQAEvaluator()  
         print("✅ LLM-as-a-Judge evaluator ready!")
     except Exception as e:
         print(f"❌ Error setting up LLM Judge: {e}")
@@ -438,7 +438,7 @@ def main():
         print(answer)
         print("-" * 30)
         
-        # Only evaluate if we got a real answer
+        
         if not answer.startswith("Error getting answer:"):
             print("\n🔄 Running LLM-as-a-Judge evaluation...")
             evaluation = evaluator.evaluate_answer_advanced(question, answer)
@@ -446,7 +446,7 @@ def main():
         else:
             print("❌ Skipping evaluation due to answer error")
         
-        # Ask if user wants to continue
+        
         continue_choice = input("\nPress Enter to ask another question (or 'q' to quit): ").strip()
         if continue_choice.lower() in ['q', 'quit']:
             print("👋 Goodbye!")
